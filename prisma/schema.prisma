@@ -1,0 +1,131 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Plan {
+  FREE
+  TRIAL
+  PRO
+}
+
+enum Role {
+  CLIENTE
+  FUNCIONARIO
+}
+
+enum Recorrencia {
+  AVULSO
+  SEMANAL
+  BISSEMANAL
+  MENSAL
+}
+
+enum EstagioPedido {
+  PEDIDO_FEITO
+  ENTREGUE_NA_LOJA
+  EM_LAVAGEM
+  PRONTO_RETIRADA
+}
+
+model User {
+  id                       String    @id @default(cuid())
+  name                     String?
+  email                    String    @unique
+  emailVerified            DateTime?
+  image                    String?
+  password                 String?   // for funcionarios
+  role                     Role      @default(CLIENTE)
+  stripeCustomerId         String?   @unique
+  stripePriceId            String?
+  stripeSubscriptionId     String?   @unique
+  stripeCurrentPeriodEnd   DateTime?
+  trialEndsAt              DateTime?
+  plan                     Plan      @default(FREE)
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @updatedAt
+
+  accounts Account[]
+  sessions Session[]
+  pedidos  Pedido[]
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+// ─── Laundry Domain ──────────────────────────────────
+
+model Pedido {
+  id                       String        @id @default(cuid())
+  userId                   String
+  recorrencia              Recorrencia
+  estagio                  EstagioPedido @default(PEDIDO_FEITO)
+  diaAgendado              DateTime
+  turno                    String        // "manha" or "tarde"
+  estimativaEntrega        DateTime
+  valorTotal               Decimal       @db.Decimal(10, 2)
+  emailNotificacaoFalhou   Boolean       @default(false)
+  pago                     Boolean       @default(false)
+  createdAt                DateTime      @default(now())
+  updatedAt                DateTime      @updatedAt
+
+  user  User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  itens ItemPedido[]
+
+  @@index([userId])
+  @@index([estagio])
+}
+
+model ItemPedido {
+  id            String  @id @default(cuid())
+  pedidoId      String
+  categoriaSlug String
+  itemSlug      String
+  itemNome      String
+  categoriaNome String
+  quantidade    Int
+  precoUnitario Decimal @db.Decimal(10, 2)
+
+  pedido Pedido @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+
+  @@index([pedidoId])
+}
