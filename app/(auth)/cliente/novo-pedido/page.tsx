@@ -347,7 +347,7 @@ export default function NovoPedidoPage() {
       <Button
         size="lg"
         className="w-full cursor-pointer bg-indigo-600 hover:bg-indigo-700"
-        disabled={!diaAgendado || !turno}
+        disabled={!diaAgendado || !turno || status === "loading"}
         onClick={handleContinuar}
       >
         Continuar para pagamento
