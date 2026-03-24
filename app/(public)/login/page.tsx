@@ -83,7 +83,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <Link href="/" className="mx-auto mb-4 flex items-center gap-2">
-            <DuckIcon className="h-8 w-8 text-gray-900" />
+            <DuckIcon className="h-5 w-5 text-gray-900" />
             <span className="text-2xl font-bold text-gray-900">Lavô</span>
           </Link>
           <CardTitle>Entrar na sua conta</CardTitle>
