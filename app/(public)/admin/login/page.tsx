@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { WashingMachine, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { DuckIcon } from "@/components/ui/duck-icon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -39,8 +40,8 @@ export default function AdminLoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <Link href="/" className="mx-auto mb-4 flex items-center gap-2">
-            <WashingMachine className="h-8 w-8 text-indigo-600" />
-            <span className="text-2xl font-bold text-gray-900">Lavanderia do Bairro</span>
+            <DuckIcon className="h-8 w-8 text-indigo-600" />
+            <span className="text-2xl font-bold text-gray-900">Lavô</span>
           </Link>
           <CardTitle>Acesso Funcionários</CardTitle>
           <CardDescription>

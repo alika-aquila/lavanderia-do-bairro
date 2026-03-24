@@ -21,7 +21,7 @@ export async function enviarEmailPronto({
       <p>Boas notícias! Seu pedido <strong>#${pedidoId.slice(-6).toUpperCase()}</strong> está pronto e aguardando retirada na lavanderia.</p>
       <p>Pode vir buscar quando quiser!</p>
       <p>Qualquer dúvida, estamos à disposição.</p>
-      <p>— Equipe Lavanderia do Bairro</p>
+      <p>— Equipe Lavô</p>
     `,
   });
 }
@@ -48,7 +48,7 @@ export async function enviarEmailDivergencia({
         ${mensagem}
       </blockquote>
       <p>Entre em contato conosco para resolvermos juntos.</p>
-      <p>— Equipe Lavanderia do Bairro</p>
+      <p>— Equipe Lavô</p>
     `,
   });
 }

@@ -4,11 +4,30 @@ import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { CheckCircle2, Mail, Loader2 } from "lucide-react";
+import { Mail, Loader2, FlaskConical } from "lucide-react";
 import Link from "next/link";
+import { DuckIcon } from "@/components/ui/duck-icon";
+
+const IS_DEV = process.env.NODE_ENV === "development";
+
+/** Reads ?callbackUrl= from the browser URL at click-time (never during SSR). */
+function getCallbackUrl(): string {
+  if (typeof window === "undefined") return "/";
+  const params = new URLSearchParams(window.location.search);
+  const cb = params.get("callbackUrl");
+  // Only allow internal paths to prevent open-redirect attacks
+  if (cb && cb.startsWith("/") && !cb.startsWith("//")) return cb;
+  return "/";
+}
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -17,15 +36,21 @@ export default function LoginPage() {
 
   async function handleGoogleSignIn() {
     setIsLoading(true);
-    await signIn("google", { callbackUrl: "/dashboard" });
+    await signIn("google", { callbackUrl: getCallbackUrl() });
   }
 
   async function handleEmailSignIn(e: React.FormEvent) {
     e.preventDefault();
     if (!email) return;
     setIsLoading(true);
-    await signIn("resend", { email, callbackUrl: "/dashboard" });
+    await signIn("resend", { email, callbackUrl: getCallbackUrl() });
     setEmailSent(true);
+    setIsLoading(false);
+  }
+
+  async function handleDevLogin() {
+    setIsLoading(true);
+    await signIn("dev-cliente", { callbackUrl: getCallbackUrl() });
     setIsLoading(false);
   }
 
@@ -58,18 +83,18 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <Link href="/" className="mx-auto mb-4 flex items-center gap-2">
-            <CheckCircle2 className="h-8 w-8 text-blue-600" />
-            <span className="text-2xl font-bold">TaskFlow</span>
+            <DuckIcon className="h-8 w-8 text-gray-900" />
+            <span className="text-2xl font-bold text-gray-900">Lavô</span>
           </Link>
           <CardTitle>Entrar na sua conta</CardTitle>
           <CardDescription>
-            Comece com 14 dias grátis. Sem cartão de crédito.
+            Acesse seus pedidos e gerencie sua conta.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <Button
             variant="outline"
-            className="w-full"
+            className="w-full cursor-pointer"
             onClick={handleGoogleSignIn}
             disabled={isLoading}
           >
@@ -77,22 +102,10 @@ export default function LoginPage() {
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
               <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
-                <path
-                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
-                  fill="#4285F4"
-                />
-                <path
-                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                  fill="#34A853"
-                />
-                <path
-                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                  fill="#FBBC05"
-                />
-                <path
-                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                  fill="#EA4335"
-                />
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
               </svg>
             )}
             Continuar com Google
@@ -119,7 +132,7 @@ export default function LoginPage() {
             </div>
             <Button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700"
+              className="w-full cursor-pointer bg-indigo-600 hover:bg-indigo-700"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -142,6 +155,34 @@ export default function LoginPage() {
             </Link>
             .
           </p>
+
+          {/* ── DEV ONLY: acesso rápido para testes no localhost ── */}
+          {IS_DEV && (
+            <>
+              <div className="relative">
+                <Separator />
+                <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-2 text-xs text-amber-500 font-medium">
+                  DEV
+                </span>
+              </div>
+              <Button
+                variant="outline"
+                className="w-full cursor-pointer border-amber-300 text-amber-700 hover:bg-amber-50"
+                onClick={handleDevLogin}
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <FlaskConical className="mr-2 h-4 w-4" />
+                )}
+                Entrar como Cliente Teste
+              </Button>
+              <p className="text-center text-xs text-amber-600/70">
+                Apenas visível em localhost · não aparece em produção
+              </p>
+            </>
+          )}
         </CardContent>
       </Card>
     </div>

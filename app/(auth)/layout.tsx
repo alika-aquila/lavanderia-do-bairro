@@ -1,16 +1,20 @@
-import { Sidebar } from "@/components/layout/sidebar";
-import { TopHeader } from "@/components/layout/top-header";
-import { TrialBanner } from "@/components/layout/trial-banner";
+import Link from "next/link";
+import { DuckIcon } from "@/components/ui/duck-icon";
+import { UserMenu } from "@/components/lavanderia/user-menu";
 
-export default function AuthLayout({ children }: { children: React.ReactNode }) {
+export default function CheckoutLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-white font-['Inter',sans-serif]">
-      <TrialBanner />
-      <TopHeader />
-      <div className="flex flex-1 overflow-hidden">
-        <Sidebar />
-        <main className="flex-1 overflow-auto bg-white">{children}</main>
-      </div>
+    <div className="min-h-screen bg-gray-50">
+      <header className="border-b bg-white">
+        <div className="mx-auto flex h-14 max-w-4xl items-center justify-between px-6">
+          <Link href="/" className="flex items-center gap-2">
+            <DuckIcon className="h-6 w-6 text-gray-900" />
+            <span className="font-bold text-gray-900">Lavô</span>
+          </Link>
+          <UserMenu />
+        </div>
+      </header>
+      <main>{children}</main>
     </div>
   );
 }

@@ -1,5 +1,8 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { Sidebar } from "@/components/layout/sidebar";
+import { TopHeader } from "@/components/layout/top-header";
+import { TrialBanner } from "@/components/layout/trial-banner";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -9,21 +12,13 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="border-b bg-white">
-        <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-gray-900">Lavanderia do Bairro</span>
-            <span className="rounded bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-700">
-              Admin
-            </span>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-500">{session.user.email}</span>
-          </div>
-        </div>
-      </header>
-      <main>{children}</main>
+    <div className="flex h-screen flex-col overflow-hidden bg-white font-['Inter',sans-serif]">
+      <TrialBanner />
+      <TopHeader />
+      <div className="flex flex-1 overflow-hidden">
+        <Sidebar />
+        <main className="flex-1 overflow-auto bg-white">{children}</main>
+      </div>
     </div>
   );
 }

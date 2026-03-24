@@ -6,6 +6,8 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "@/lib/db";
 import bcrypt from "bcryptjs";
 
+const isDev = process.env.NODE_ENV === "development";
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(db),
   session: { strategy: "jwt" },
@@ -39,6 +41,40 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         return { id: user.id, name: user.name, email: user.email, role: user.role };
       },
     }),
+    // ── DEV ONLY: login de teste sem senha ─────────────────────────────────
+    ...(isDev
+      ? [
+          Credentials({
+            id: "dev-cliente",
+            name: "Cliente (Dev)",
+            credentials: {},
+            async authorize() {
+              const email = "cliente@teste.dev";
+              // upsert: cria se não existir, reutiliza se já existir
+              let user = await db.user.findUnique({ where: { email } });
+              if (!user) {
+                const trialEndsAt = new Date();
+                trialEndsAt.setDate(trialEndsAt.getDate() + 14);
+                user = await db.user.create({
+                  data: {
+                    email,
+                    name: "Cliente Teste",
+                    role: "CLIENTE",
+                    plan: "TRIAL",
+                    trialEndsAt,
+                  },
+                });
+              }
+              return {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+              };
+            },
+          }),
+        ]
+      : []),
   ],
   callbacks: {
     async jwt({ token, user, trigger }) {
@@ -54,6 +90,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (dbUser) {
           token.id = dbUser.id;
           token.role = dbUser.role;
+          token.name = dbUser.name ?? token.name; // persist name from DB (falls back to Google profile)
           token.plan = dbUser.plan;
           token.trialEndsAt = dbUser.trialEndsAt?.toISOString() || null;
           token.stripeCustomerId = dbUser.stripeCustomerId;

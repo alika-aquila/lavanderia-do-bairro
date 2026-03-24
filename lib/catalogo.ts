@@ -1,4 +1,4 @@
-export type Recorrencia = "AVULSO" | "SEMANAL" | "BISSEMANAL" | "MENSAL";
+export type Recorrencia = "AVULSO" | "SEMANAL" | "QUINZENAL" | "MENSAL";
 
 export interface ItemCatalogo {
   slug: string;
@@ -17,31 +17,33 @@ export const CATALOGO: Categoria[] = [
     slug: "toalhas",
     nome: "Toalhas",
     itens: [
-      { slug: "toalha-banho", nome: "Toalha de banho", precos: { AVULSO: 8, SEMANAL: 6, BISSEMANAL: 5.5, MENSAL: 5 } },
-      { slug: "toalha-rosto", nome: "Toalha de rosto", precos: { AVULSO: 5, SEMANAL: 4, BISSEMANAL: 3.5, MENSAL: 3 } },
-      { slug: "toalha-piso", nome: "Toalha de piso", precos: { AVULSO: 6, SEMANAL: 4.5, BISSEMANAL: 4, MENSAL: 3.5 } },
+      { slug: "toalha-banho", nome: "Toalha de Banho", precos: { AVULSO: 10, SEMANAL: 8.5, QUINZENAL: 9, MENSAL: 9.5 } },
+      { slug: "toalha-rosto", nome: "Toalha de Rosto", precos: { AVULSO: 6, SEMANAL: 5, QUINZENAL: 5.5, MENSAL: 5.8 } },
+      { slug: "toalha-grande", nome: "Toalha Grande", precos: { AVULSO: 12, SEMANAL: 10, QUINZENAL: 10.5, MENSAL: 11 } },
     ],
   },
   {
     slug: "roupa-de-cama",
     nome: "Roupa de Cama",
     itens: [
-      { slug: "lencol-casal", nome: "Lençol casal", precos: { AVULSO: 18, SEMANAL: 14, BISSEMANAL: 12, MENSAL: 10 } },
-      { slug: "lencol-solteiro", nome: "Lençol solteiro", precos: { AVULSO: 12, SEMANAL: 9, BISSEMANAL: 8, MENSAL: 7 } },
-      { slug: "fronha", nome: "Fronha", precos: { AVULSO: 5, SEMANAL: 4, BISSEMANAL: 3.5, MENSAL: 3 } },
-      { slug: "edredom-casal", nome: "Edredom casal", precos: { AVULSO: 30, SEMANAL: 24, BISSEMANAL: 22, MENSAL: 20 } },
-      { slug: "edredom-solteiro", nome: "Edredom solteiro", precos: { AVULSO: 22, SEMANAL: 18, BISSEMANAL: 16, MENSAL: 14 } },
+      { slug: "lencol", nome: "Lençol", precos: { AVULSO: 18, SEMANAL: 15, QUINZENAL: 16, MENSAL: 17 } },
+      { slug: "fronha", nome: "Fronha", precos: { AVULSO: 6, SEMANAL: 5, QUINZENAL: 5.5, MENSAL: 5.8 } },
+      { slug: "edredom", nome: "Edredom", precos: { AVULSO: 35, SEMANAL: 30, QUINZENAL: 32, MENSAL: 33 } },
+      { slug: "cobertor", nome: "Cobertor", precos: { AVULSO: 30, SEMANAL: 26, QUINZENAL: 28, MENSAL: 29 } },
     ],
   },
   {
     slug: "roupas",
     nome: "Roupas",
     itens: [
-      { slug: "camiseta", nome: "Camiseta", precos: { AVULSO: 7, SEMANAL: 5.5, BISSEMANAL: 5, MENSAL: 4.5 } },
-      { slug: "calca-jeans", nome: "Calça jeans", precos: { AVULSO: 12, SEMANAL: 9, BISSEMANAL: 8, MENSAL: 7 } },
-      { slug: "vestido", nome: "Vestido", precos: { AVULSO: 14, SEMANAL: 11, BISSEMANAL: 10, MENSAL: 9 } },
-      { slug: "shorts", nome: "Shorts", precos: { AVULSO: 7, SEMANAL: 5.5, BISSEMANAL: 5, MENSAL: 4.5 } },
-      { slug: "camisa-social", nome: "Camisa social", precos: { AVULSO: 12, SEMANAL: 9, BISSEMANAL: 8, MENSAL: 7 } },
+      { slug: "camiseta", nome: "Camiseta", precos: { AVULSO: 8, SEMANAL: 6.5, QUINZENAL: 7, MENSAL: 7.5 } },
+      { slug: "camisa-social", nome: "Camisa Social", precos: { AVULSO: 10, SEMANAL: 8.5, QUINZENAL: 9, MENSAL: 9.5 } },
+      { slug: "calca", nome: "Calça", precos: { AVULSO: 12, SEMANAL: 10, QUINZENAL: 10.5, MENSAL: 11 } },
+      { slug: "jeans", nome: "Jeans", precos: { AVULSO: 14, SEMANAL: 12, QUINZENAL: 12.5, MENSAL: 13 } },
+      { slug: "vestido", nome: "Vestido", precos: { AVULSO: 15, SEMANAL: 12.5, QUINZENAL: 13, MENSAL: 14 } },
+      { slug: "casaco", nome: "Casaco", precos: { AVULSO: 18, SEMANAL: 15.5, QUINZENAL: 16.5, MENSAL: 17 } },
+      { slug: "terno", nome: "Terno (Conjunto)", precos: { AVULSO: 28, SEMANAL: 24, QUINZENAL: 25, MENSAL: 26 } },
+      { slug: "pecas-delicadas", nome: "Peças Delicadas", precos: { AVULSO: 16, SEMANAL: 13.5, QUINZENAL: 14.5, MENSAL: 15 } },
     ],
   },
 ];
@@ -49,16 +51,40 @@ export const CATALOGO: Categoria[] = [
 export const DIAS_ENTREGA: Record<Recorrencia, number> = {
   AVULSO: 3,
   SEMANAL: 5,
-  BISSEMANAL: 5,
+  QUINZENAL: 5,
   MENSAL: 7,
 };
 
 export const RECORRENCIA_LABELS: Record<Recorrencia, string> = {
   AVULSO: "Avulso",
   SEMANAL: "Semanal",
-  BISSEMANAL: "Bissemanal",
+  QUINZENAL: "Quinzenal",
   MENSAL: "Mensal",
 };
+
+/** Brazilian national fixed holidays (month 1-based, day) */
+const FERIADOS_FIXOS: [number, number][] = [
+  [1, 1],   // Ano Novo
+  [4, 21],  // Tiradentes
+  [5, 1],   // Dia do Trabalho
+  [9, 7],   // Independência do Brasil
+  [10, 12], // Nossa Senhora Aparecida
+  [11, 2],  // Finados
+  [11, 15], // Proclamação da República
+  [11, 20], // Dia da Consciência Negra
+  [12, 25], // Natal
+];
+
+function isFeriado(date: Date): boolean {
+  const m = date.getMonth() + 1;
+  const d = date.getDate();
+  return FERIADOS_FIXOS.some(([hm, hd]) => hm === m && hd === d);
+}
+
+function isDiaUtil(date: Date): boolean {
+  const dow = date.getDay();
+  return dow !== 0 && dow !== 6 && !isFeriado(date);
+}
 
 export function calcularEstimativaEntrega(diaAgendado: Date, recorrencia: Recorrencia): Date {
   const diasParaAdicionar = DIAS_ENTREGA[recorrencia];
@@ -66,8 +92,7 @@ export function calcularEstimativaEntrega(diaAgendado: Date, recorrencia: Recorr
   let adicionados = 0;
   while (adicionados < diasParaAdicionar) {
     entrega.setDate(entrega.getDate() + 1);
-    const diaSemana = entrega.getDay();
-    if (diaSemana !== 0 && diaSemana !== 6) adicionados++; // skip weekends
+    if (isDiaUtil(entrega)) adicionados++;
   }
   return entrega;
 }

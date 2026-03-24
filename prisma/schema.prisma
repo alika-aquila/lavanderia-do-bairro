@@ -21,7 +21,7 @@ enum Role {
 enum Recorrencia {
   AVULSO
   SEMANAL
-  BISSEMANAL
+  QUINZENAL
   MENSAL
 }
 
@@ -46,6 +46,14 @@ model User {
   stripeCurrentPeriodEnd   DateTime?
   trialEndsAt              DateTime?
   plan                     Plan      @default(FREE)
+  cpf              String?
+  genero           String?
+  dataNascimento   String?
+  dddCelular       String?
+  celular          String?
+  dddTelefone      String?
+  telefone         String?
+  avatarDuck       String?   @default("1")
   createdAt                DateTime  @default(now())
   updatedAt                DateTime  @updatedAt
 

@@ -10,13 +10,16 @@ function formatBRL(value: number | string) {
   return Number(value).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
+/** "Quarta-feira, 25/03/2026" */
 function formatDate(date: Date | string) {
-  return new Date(date).toLocaleDateString("pt-BR", {
-    weekday: "long",
+  const d = new Date(date);
+  const weekday = d.toLocaleDateString("pt-BR", { weekday: "long" });
+  const dateStr = d.toLocaleDateString("pt-BR", {
     day: "2-digit",
-    month: "long",
+    month: "2-digit",
     year: "numeric",
   });
+  return `${weekday.charAt(0).toUpperCase() + weekday.slice(1)}, ${dateStr}`;
 }
 
 export default async function ConfirmadoPage({ params }: { params: Promise<{ id: string }> }) {
@@ -101,7 +104,7 @@ export default async function ConfirmadoPage({ params }: { params: Promise<{ id:
       </div>
 
       <div className="mt-8">
-        <Link href="/cliente">
+        <Link href="/client">
           <Button className="bg-indigo-600 hover:bg-indigo-700">
             Acompanhar pedido
             <ArrowRight className="ml-2 h-4 w-4" />

@@ -10,7 +10,7 @@ const criarPedidoSchema = z.object({
     itemSlug: z.string(),
     quantidade: z.number().int().min(1),
   })).min(1),
-  recorrencia: z.enum(["AVULSO", "SEMANAL", "BISSEMANAL", "MENSAL"]),
+  recorrencia: z.enum(["AVULSO", "SEMANAL", "QUINZENAL", "MENSAL"]),
   diaAgendado: z.string(),
   turno: z.enum(["manha", "tarde"]),
 });
@@ -37,21 +37,6 @@ export async function POST(req: Request) {
   if (!parsed.success) return NextResponse.json({ error: "Dados inválidos", details: parsed.error.flatten() }, { status: 400 });
 
   const { categoriaSlug, itens, recorrencia, diaAgendado, turno } = parsed.data;
-
-  // Check for existing active order in same category
-  const existingItems = await db.itemPedido.findFirst({
-    where: {
-      categoriaSlug,
-      pedido: {
-        userId: session.user.id,
-        estagio: { not: "PRONTO_RETIRADA" },
-        pago: true,
-      },
-    },
-  });
-  if (existingItems) {
-    return NextResponse.json({ error: "Você já tem um pedido ativo nesta categoria." }, { status: 409 });
-  }
 
   const categoria = CATALOGO.find((c) => c.slug === categoriaSlug);
   if (!categoria) return NextResponse.json({ error: "Categoria inválida" }, { status: 400 });
