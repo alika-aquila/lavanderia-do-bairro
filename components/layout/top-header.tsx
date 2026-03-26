@@ -38,8 +38,11 @@ export function TopHeader() {
         Criar Novo Pedido
       </Link>
 
+      {/* Spacer */}
+      <div className="flex-1" />
+
       {/* Search */}
-      <div className="relative flex-1 max-w-md">
+      <div className="relative w-64">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9AA6AC]" />
         <input
           type="text"
@@ -49,9 +52,6 @@ export function TopHeader() {
           className="h-9 w-full rounded-lg border border-[#DDE2E4] bg-white pl-9 pr-3 text-sm text-[#252C32] placeholder:text-[#9AA6AC] focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
         />
       </div>
-
-      {/* Spacer */}
-      <div className="flex-1" />
 
       {/* Employee name + avatar */}
       {session?.user && (

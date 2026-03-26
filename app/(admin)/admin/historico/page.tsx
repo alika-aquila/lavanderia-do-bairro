@@ -49,7 +49,7 @@ export default async function HistoricoPage() {
   }) {
     return (
       <div
-        className={`grid grid-cols-[1fr_1fr_auto_auto_auto] items-center gap-4 rounded-lg border bg-white px-5 py-4 text-sm transition ${
+        className={`grid grid-cols-[minmax(160px,1fr)_minmax(140px,180px)_minmax(200px,auto)_auto_auto] items-center gap-4 rounded-lg border bg-white px-5 py-4 text-sm transition ${
           dimmed ? "opacity-60" : ""
         }`}
       >

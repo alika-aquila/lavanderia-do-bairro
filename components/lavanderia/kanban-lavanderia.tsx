@@ -250,8 +250,8 @@ export function KanbanLavanderia({ initialPedidos }: KanbanLavanderiaProps) {
           return (
             <div
               key={coluna.key}
-              className={`flex min-w-72 flex-col rounded-xl border transition-colors ${coluna.color} ${
-                isDragTarget ? "ring-2 ring-indigo-400 ring-offset-1" : ""
+              className={`flex min-w-72 flex-col rounded-xl transition-colors ${coluna.color} ${
+                isDragTarget ? "border-2 border-indigo-400" : "border"
               }`}
               onDragOver={(e) => handleDragOver(e, coluna.key)}
               onDragLeave={() => handleDragLeave(coluna.key)}

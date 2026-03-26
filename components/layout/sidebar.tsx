@@ -28,7 +28,7 @@ export function Sidebar() {
     <aside className="flex h-full w-[240px] shrink-0 flex-col border-r border-[#E5E9EB] bg-[#F6F8F9]">
       {/* Brand header */}
       <div className="flex items-center gap-2 px-4 pt-5 pb-5">
-        <DuckIcon className="h-6 w-6 text-indigo-600" />
+        <DuckIcon className="h-4 w-4 text-indigo-600" />
         <span className="text-base font-bold text-gray-900">Lavô</span>
         <span className="ml-1 rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-semibold text-indigo-600">
           Funcionários
