@@ -28,8 +28,28 @@ function Header() {
 function Hero() {
   return (
     <section className="relative overflow-hidden py-24 sm:py-32">
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(45%_40%_at_50%_60%,rgba(99,102,241,0.08),transparent)]" />
-      <div className="mx-auto max-w-6xl px-6 text-center">
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          opacity: 0.2,
+          zIndex: 0,
+        }}
+      >
+        <source src="/videos/hero-background.mp4" type="video/mp4" />
+      </video>
+      <div
+        className="absolute inset-0 bg-[radial-gradient(45%_40%_at_50%_60%,rgba(99,102,241,0.08),transparent)]"
+        style={{ zIndex: 1, opacity: 0 }}
+      />
+      <div className="mx-auto max-w-6xl px-6 text-center" style={{ position: "relative", zIndex: 2 }}>
         <h1 className="mx-auto max-w-3xl text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
           Cuidamos das{" "}
           <span className="text-indigo-600">suas roupas</span>
