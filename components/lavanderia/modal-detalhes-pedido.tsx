@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Loader2, AlertCircle, RefreshCw } from "lucide-react";
+import { Loader2, AlertCircle, RefreshCw, CheckCircle2, Archive } from "lucide-react";
 import { RECORRENCIA_LABELS } from "@/lib/catalogo";
 import { toast } from "sonner";
 
@@ -49,19 +49,41 @@ function formatDate(date: string) {
   });
 }
 
+function isOverdue(dateStr: string) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return new Date(dateStr) < today;
+}
+
 interface ModalDetalhesPedidoProps {
   pedido: PedidoDetalhes | null;
   open: boolean;
   onClose: () => void;
   onEstagioUpdated: (id: string, novoEstagio: string, emailFalhou: boolean) => void;
+  onArquivar?: (id: string) => void;
 }
 
-export function ModalDetalhesPedido({ pedido, open, onClose, onEstagioUpdated }: ModalDetalhesPedidoProps) {
+export function ModalDetalhesPedido({
+  pedido,
+  open,
+  onClose,
+  onEstagioUpdated,
+  onArquivar,
+}: ModalDetalhesPedidoProps) {
   const [mensagemDivergencia, setMensagemDivergencia] = useState("");
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [isReenviando, setIsReenviando] = useState(false);
 
   if (!pedido) return null;
+
+  const isProntoRetirada = pedido.estagio === "PRONTO_RETIRADA";
+  const clienteNotificado = isProntoRetirada && !pedido.emailNotificacaoFalhou;
+
+  const agendadoOverdue =
+    pedido.estagio === "PEDIDO_FEITO" && isOverdue(pedido.diaAgendado);
+  const estimativaOverdue =
+    (pedido.estagio === "ENTREGUE_NA_LOJA" || pedido.estagio === "EM_LAVAGEM") &&
+    isOverdue(pedido.estimativaEntrega);
 
   async function handleEnviarDivergencia() {
     if (!mensagemDivergencia.trim() || !pedido) return;
@@ -133,6 +155,14 @@ export function ModalDetalhesPedido({ pedido, open, onClose, onEstagioUpdated }:
             </span>
           </div>
 
+          {/* Cliente notificado banner */}
+          {clienteNotificado && (
+            <div className="flex items-center gap-3 rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700">
+              <CheckCircle2 className="h-4 w-4 shrink-0 text-green-500" />
+              <p>Cliente notificado por e-mail sobre o pedido estar pronto para retirada.</p>
+            </div>
+          )}
+
           {/* Details grid */}
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div>
@@ -149,11 +179,15 @@ export function ModalDetalhesPedido({ pedido, open, onClose, onEstagioUpdated }:
             </div>
             <div>
               <p className="text-gray-500">Dia agendado</p>
-              <p className="font-medium text-gray-900">{formatDate(pedido.diaAgendado)}</p>
+              <p className={`font-medium ${agendadoOverdue ? "font-bold text-red-600" : "text-gray-900"}`}>
+                {formatDate(pedido.diaAgendado)}
+              </p>
             </div>
             <div>
               <p className="text-gray-500">Estimativa entrega</p>
-              <p className="font-medium text-gray-900">{formatDate(pedido.estimativaEntrega)}</p>
+              <p className={`font-medium ${estimativaOverdue ? "font-bold text-red-600" : "text-gray-900"}`}>
+                {formatDate(pedido.estimativaEntrega)}
+              </p>
             </div>
           </div>
 
@@ -201,6 +235,18 @@ export function ModalDetalhesPedido({ pedido, open, onClose, onEstagioUpdated }:
                 <span className="ml-1">Reenviar</span>
               </Button>
             </div>
+          )}
+
+          {/* Archive button (only in PRONTO_RETIRADA) */}
+          {isProntoRetirada && onArquivar && (
+            <Button
+              variant="outline"
+              className="w-full border-gray-300 text-gray-700 hover:bg-gray-50"
+              onClick={() => onArquivar(pedido.id)}
+            >
+              <Archive className="mr-2 h-4 w-4" />
+              Arquivar pedido
+            </Button>
           )}
 
           {/* Divergence email */}

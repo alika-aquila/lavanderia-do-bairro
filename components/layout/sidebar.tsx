@@ -3,34 +3,20 @@
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard,
-  Columns3,
-  CreditCard,
-  AtSign,
-  LogOut,
-} from "lucide-react";
+import { ClipboardList, History, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { DuckIcon } from "@/components/ui/duck-icon";
 
 const NAV_ITEMS = [
   {
-    label: "Dashboard",
-    href: "/dashboard",
-    icon: LayoutDashboard,
+    label: "Pedidos Ativos",
+    href: "/admin/dashboard",
+    icon: ClipboardList,
   },
   {
-    label: "Active sprints",
-    href: "/dashboard",
-    icon: Columns3,
-    exact: true,
-  },
-];
-
-const BOTTOM_ITEMS = [
-  {
-    label: "Planos e pagamentos",
-    href: "/settings/billing",
-    icon: CreditCard,
+    label: "Histórico de Pedidos",
+    href: "/admin/historico",
+    icon: History,
   },
 ];
 
@@ -40,63 +26,34 @@ export function Sidebar() {
 
   return (
     <aside className="flex h-full w-[240px] shrink-0 flex-col border-r border-[#E5E9EB] bg-[#F6F8F9]">
-      {/* Project header */}
-      <div className="flex items-center gap-2 px-4 pt-4 pb-4">
-        <div className="flex h-8 w-8 items-center justify-center rounded-md bg-[#0E73F6] text-white">
-          <AtSign className="h-5 w-5" />
-        </div>
-        <div className="flex flex-col">
-          <span className="text-sm font-semibold leading-6 tracking-[-0.084px] text-[#252C32]">
-            Task Manager
-          </span>
-          <span className="text-xs leading-4 text-[#84919A]">
-            Classic software project
-          </span>
-        </div>
+      {/* Brand header */}
+      <div className="flex items-center gap-2 px-4 pt-5 pb-5">
+        <DuckIcon className="h-6 w-6 text-indigo-600" />
+        <span className="text-base font-bold text-gray-900">Lavô</span>
+        <span className="ml-1 rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-semibold text-indigo-600">
+          Funcionários
+        </span>
       </div>
 
+      <div className="mx-4 h-px bg-[#E5E9EB]" />
+
       {/* Navigation */}
-      <nav className="flex flex-1 flex-col gap-0 px-4">
+      <nav className="flex flex-1 flex-col gap-1 px-4 pt-3">
         {NAV_ITEMS.map((item) => {
-          const isActive = item.exact
-            ? pathname === item.href
-            : pathname.startsWith(item.href);
+          const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
           const Icon = item.icon;
 
           return (
             <Link
               key={item.label}
               href={item.href}
-              className={`flex items-center gap-2 rounded-md px-2 py-1 text-sm tracking-[-0.084px] transition-colors ${
+              className={`flex items-center gap-2 rounded-md px-2 py-2 text-sm tracking-[-0.084px] transition-colors ${
                 isActive
                   ? "bg-[#D7EDFF] font-semibold text-[#0E73F6]"
                   : "font-normal text-[#252C32] hover:bg-[#E5E9EB]"
               }`}
             >
-              <Icon className="h-6 w-6 shrink-0" />
-              <span className="leading-6">{item.label}</span>
-            </Link>
-          );
-        })}
-
-        {/* Divider */}
-        <div className="my-2 h-px bg-[#E5E9EB]" />
-
-        {BOTTOM_ITEMS.map((item) => {
-          const isActive = pathname.startsWith(item.href);
-          const Icon = item.icon;
-
-          return (
-            <Link
-              key={item.label}
-              href={item.href}
-              className={`flex items-center gap-2 rounded-md px-2 py-1 text-sm tracking-[-0.084px] transition-colors ${
-                isActive
-                  ? "bg-[#D7EDFF] font-semibold text-[#0E73F6]"
-                  : "font-normal text-[#252C32] hover:bg-[#E5E9EB]"
-              }`}
-            >
-              <Icon className="h-6 w-6 shrink-0" />
+              <Icon className="h-5 w-5 shrink-0" />
               <span className="leading-6">{item.label}</span>
             </Link>
           );
@@ -118,7 +75,7 @@ export function Sidebar() {
                   .map((n) => n[0])
                   .join("")
                   .toUpperCase()
-                  .slice(0, 2) || "U"}
+                  .slice(0, 2) || "F"}
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-1 flex-col overflow-hidden">
@@ -132,6 +89,7 @@ export function Sidebar() {
             <button
               onClick={() => signOut({ callbackUrl: "/" })}
               className="shrink-0 rounded-md p-1 text-[#84919A] hover:bg-[#E5E9EB] hover:text-[#252C32]"
+              title="Sair"
             >
               <LogOut className="h-4 w-4" />
             </button>

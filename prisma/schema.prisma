@@ -113,6 +113,7 @@ model Pedido {
   valorTotal               Decimal       @db.Decimal(10, 2)
   emailNotificacaoFalhou   Boolean       @default(false)
   pago                     Boolean       @default(false)
+  arquivado                Boolean       @default(false)
   createdAt                DateTime      @default(now())
   updatedAt                DateTime      @updatedAt
 

@@ -1,90 +1,80 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import {
-  LayoutGrid,
-  Flame,
-  Search,
-  HelpCircle,
-  Settings,
-  Bell,
-} from "lucide-react";
+import { Search, Plus } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useCallback } from "react";
 
 export function TopHeader() {
   const { data: session } = useSession();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const handleSearch = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const q = e.target.value;
+      const params = new URLSearchParams(searchParams.toString());
+      if (q) {
+        params.set("q", q);
+      } else {
+        params.delete("q");
+      }
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    },
+    [router, pathname, searchParams]
+  );
 
   return (
-    <header className="flex h-16 shrink-0 items-center border-b border-[#E5E9EB] bg-white px-6">
-      {/* Left icons */}
-      <div className="flex items-center gap-1">
-        <button className="flex h-8 w-8 items-center justify-center rounded-md text-[#6E7C87] hover:bg-[#F6F8F9]">
-          <LayoutGrid className="h-6 w-6" />
-        </button>
-        <button className="flex h-8 w-8 items-center justify-center rounded-md text-[#6E7C87] hover:bg-[#F6F8F9]">
-          <Flame className="h-6 w-6" />
-        </button>
-      </div>
+    <header className="flex h-16 shrink-0 items-center gap-4 border-b border-[#E5E9EB] bg-white px-6">
+      {/* Criar Novo Pedido */}
+      <Link
+        href="/admin/novo-pedido"
+        className="flex shrink-0 items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 transition-colors"
+      >
+        <Plus className="h-4 w-4" />
+        Criar Novo Pedido
+      </Link>
 
-      {/* Center tabs */}
-      <div className="ml-4 flex items-center gap-1">
-        <Link
-          href="/dashboard"
-          className="rounded-md px-3 py-1 text-sm leading-6 tracking-[-0.084px] text-[#252C32] hover:bg-[#F6F8F9]"
-        >
-          Minhas tarefas
-        </Link>
-        <button className="rounded-md border border-[#DDE2E4] bg-white px-3 py-1 text-sm leading-6 tracking-[-0.084px] text-[#252C32] hover:bg-[#F6F8F9]">
-          Criar lista
-        </button>
+      {/* Search */}
+      <div className="relative flex-1 max-w-md">
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9AA6AC]" />
+        <input
+          type="text"
+          placeholder="Buscar por cliente ou nº do pedido…"
+          defaultValue={searchParams.get("q") ?? ""}
+          onChange={handleSearch}
+          className="h-9 w-full rounded-lg border border-[#DDE2E4] bg-white pl-9 pr-3 text-sm text-[#252C32] placeholder:text-[#9AA6AC] focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+        />
       </div>
 
       {/* Spacer */}
       <div className="flex-1" />
 
-      {/* Right side */}
-      <div className="flex items-center gap-1">
-        {/* Search */}
-        <div className="relative mr-2">
-          <Search className="absolute left-2 top-1/2 h-5 w-5 -translate-y-1/2 text-[#9AA6AC]" />
-          <input
-            type="text"
-            placeholder="Search"
-            className="h-8 w-[200px] rounded-md border border-[#DDE2E4] bg-white pl-8 pr-3 text-sm leading-6 tracking-[-0.084px] text-[#252C32] placeholder:text-[#9AA6AC] focus:border-[#4094F7] focus:outline-none"
-          />
-        </div>
-
-        <button className="flex h-8 w-8 items-center justify-center rounded-md text-[#6E7C87] hover:bg-[#F6F8F9]">
-          <Bell className="h-6 w-6" />
-        </button>
-        <button className="flex h-8 w-8 items-center justify-center rounded-md text-[#6E7C87] hover:bg-[#F6F8F9]">
-          <HelpCircle className="h-6 w-6" />
-        </button>
-        <Link
-          href="/settings/billing"
-          className="flex h-8 w-8 items-center justify-center rounded-md text-[#6E7C87] hover:bg-[#F6F8F9]"
-        >
-          <Settings className="h-6 w-6" />
-        </Link>
-
-        {session?.user && (
-          <Avatar className="ml-2 h-6 w-6 border border-black/10">
+      {/* Employee name + avatar */}
+      {session?.user && (
+        <div className="flex items-center gap-2.5">
+          <span className="text-sm font-medium text-[#252C32]">
+            {session.user.name?.split(" ")[0] ?? "Funcionário"}
+          </span>
+          <Avatar className="h-8 w-8 border border-black/10">
             <AvatarImage
               src={session.user.image || ""}
               alt={session.user.name || ""}
             />
-            <AvatarFallback className="bg-[#D7EDFF] text-[10px] font-semibold text-[#0452C8]">
+            <AvatarFallback className="bg-[#D7EDFF] text-xs font-semibold text-[#0452C8]">
               {session.user.name
                 ?.split(" ")
                 .map((n) => n[0])
                 .join("")
                 .toUpperCase()
-                .slice(0, 2) || "U"}
+                .slice(0, 2) || "F"}
             </AvatarFallback>
           </Avatar>
-        )}
-      </div>
+        </div>
+      )}
     </header>
   );
 }
